@@ -1,49 +1,47 @@
 package com.example.bookstore.entity;
 
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "Cart_Items")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class CartItem {
-    private Integer bookId;
-    private String title;
-    private String imageUrl;
-    private int quantity;
-    private double price;
-
-    public Integer getBookId() {
-        return bookId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cart_item_id")
+    private Integer cartItemId;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = false)
+    private Cart cart;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "edition_id", nullable = false)
+    private Edition edition;
+    
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+    
+    @Column(name = "added_at", nullable = false)
+    private LocalDateTime addedAt;
+    
+    @PrePersist
+    protected void onCreate() {
+        addedAt = LocalDateTime.now();
     }
-
-    public void setBookId(Integer bookId) {
-        this.bookId = bookId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
+    
+    // Business methods
+    public BigDecimal getSubTotal() {
+        if (edition == null || quantity == null) {
+            return BigDecimal.ZERO;
+        }
+        return edition.getCurrentPrice().multiply(BigDecimal.valueOf(quantity));
     }
 }

@@ -1,21 +1,26 @@
 package com.example.bookstore.enums;
 
 public enum UserRole {
-    USER("Khách hàng"),
-    ADMIN("Quản trị viên");
-
-    private final String displayName;
-
-    UserRole(String displayName) {
-        this.displayName = displayName;
+    CUSTOMER("customer"),
+    ADMIN("admin"), 
+    STAFF("staff");
+    
+    private final String value;
+    
+    UserRole(String value) {
+        this.value = value;
     }
-
-    public String getDisplayName() {
-        return displayName;
+    
+    public String getValue() {
+        return value;
     }
-
-    @Override
-    public String toString() {
-        return displayName;
+    
+    public static UserRole fromValue(String value) {
+        for (UserRole role : UserRole.values()) {
+            if (role.value.equals(value)) {
+                return role;
+            }
+        }
+        throw new IllegalArgumentException("Unknown UserRole value: " + value);
     }
 }

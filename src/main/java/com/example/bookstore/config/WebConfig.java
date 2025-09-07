@@ -1,22 +1,29 @@
 package com.example.bookstore.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.bookstore.interceptor.AdminInterceptor;
+import com.example.bookstore.interceptor.CustomerInterceptor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
-
-    @Autowired
-    private AuthInterceptor authInterceptor;
-
+    
+    private final AdminInterceptor adminInterceptor;
+    private final CustomerInterceptor customerInterceptor;
+    
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/", "/login", "/register", "/logout", "/css/**", "/js/**", "/img/**",
-                        "/error", "/cart/add", "/cart/view", "/cart/count", "/product-detail/**",
-                        "/search", "/contact", "/payment/momo/**", "/api/**");
+        // Admin interceptor - chỉ áp dụng cho admin routes
+        registry.addInterceptor(adminInterceptor)
+                .addPathPatterns("/admin/**")
+                .excludePathPatterns("/admin/login");
+        
+        // Customer interceptor - áp dụng cho customer routes
+        registry.addInterceptor(customerInterceptor)
+                .addPathPatterns("/profile/**", "/orders/**", "/wishlist/**", 
+                               "/cart/**", "/checkout/**");
     }
 }

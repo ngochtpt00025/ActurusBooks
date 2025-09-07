@@ -1,26 +1,30 @@
 package com.example.bookstore.enums;
 
 public enum OrderStatus {
-    PENDING("Chờ xử lý"),
-    CONFIRMED("Đã xác nhận"),
-    PREPARING("Đang chuẩn bị"),
-    SHIPPING("Đang giao hàng"),
-    DELIVERED("Đã giao hàng"),
-    CANCELLED("Đã hủy"),
-    RETURNED("Đã trả hàng");
-
-    private final String displayName;
-
-    OrderStatus(String displayName) {
-        this.displayName = displayName;
+    PENDING("pending"),
+    CONFIRMED("confirmed"),
+    PROCESSING("processing"),
+    SHIPPED("shipped"),
+    DELIVERED("delivered"),
+    CANCELLED("cancelled"),
+    RETURNED("returned");
+    
+    private final String value;
+    
+    OrderStatus(String value) {
+        this.value = value;
     }
-
-    public String getDisplayName() {
-        return displayName;
+    
+    public String getValue() {
+        return value;
     }
-
-    @Override
-    public String toString() {
-        return displayName;
+    
+    public static OrderStatus fromValue(String value) {
+        for (OrderStatus status : OrderStatus.values()) {
+            if (status.value.equals(value)) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("Unknown OrderStatus value: " + value);
     }
 }

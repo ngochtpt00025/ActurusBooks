@@ -3,6 +3,8 @@ package com.example.bookstore.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "User_Addresses")
 @Data
@@ -12,39 +14,37 @@ import lombok.*;
 public class UserAddress {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer address_id;
+    @Column(name = "address_id")
+    private Integer addressId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "full_name", nullable = false)
-    private String fullName;
+    @Column(name = "recipient_name", nullable = false, length = 150)
+    private String recipientName;
 
-    @Column(name = "phone", nullable = false)
+    @Column(name = "phone", nullable = false, length = 30)
     private String phone;
 
-    @Column(name = "province_code", nullable = false)
-    private String provinceCode;
+    @Column(name = "ward_id", nullable = false, length = 10)
+    private String wardId;
 
-    @Column(name = "province_name", nullable = false)
-    private String provinceName;
+    @Column(name = "district_id", nullable = false, length = 10)
+    private String districtId;
 
-    @Column(name = "ward_code", nullable = false)
-    private String wardCode;
+    @Column(name = "address_line", length = 500)
+    private String addressLine;
 
-    @Column(name = "ward_name", nullable = false)
-    private String wardName;
-
-    @Column(name = "street_address", nullable = false)
-    private String streetAddress; // Số nhà, tên đường
-
-    @Column(name = "is_default")
+    @Column(name = "is_default", nullable = false)
+    @Builder.Default
     private Boolean isDefault = false;
 
-    // Phương thức helper để lấy địa chỉ đầy đủ
-    @Transient
-    public String getFullAddress() {
-        return streetAddress + ", " + wardName + ", " + provinceName;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
     }
 }

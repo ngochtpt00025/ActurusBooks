@@ -1,0 +1,12 @@
+---
+description: 
+ - Kiểm tra các phần liên quan khi code
+ - Tránh code lung tung gây lỗi
+ - Luôn có validate hợp lý
+ - Sử dụng đúng cấu trúc MVC
+ - Sử dụng DTO trong Service khi làm việc
+ - Sử dụng lớp ResponseObject để chứa các kết quả trả về và gửi đi 
+ - Đảm bảo code sạch
+globs: Tất cả
+alwaysApply: true
+---

@@ -2,10 +2,12 @@ package com.example.bookstore.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "Wishlist")
+@Table(name = "Wishlists")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,23 +15,28 @@ import java.time.LocalDateTime;
 public class Wishlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @Column(name = "wishlist_id")
+    private Integer wishlistId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
+    @Column(name = "name", length = 200)
+    private String name;
 
-    @Column(name = "added_date")
-    private LocalDateTime addedDate;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+    
+    // Relationships
+    @OneToMany(mappedBy = "wishlist", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<WishlistItem> wishlistItems;
 
     @PrePersist
-    public void prePersist() {
-        if (addedDate == null) {
-            addedDate = LocalDateTime.now();
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        if (name == null || name.trim().isEmpty()) {
+            name = "My Wishlist";
         }
     }
 }
